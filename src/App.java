@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 public class App {
     static final int[] tamanhosTesteGrande =  { 31_250_000, 62_500_000, 125_000_000, 250_000_000, 500_000_000 };
@@ -38,21 +39,52 @@ public class App {
 
 
     public static void main(String[] args) {
-        int tam = 20;
+        Scanner teclado = new Scanner(System.in);
+        
+        System.out.println("--- Oficina: Ordenação PUC Minas ---");
+        System.out.print("Digite o tamanho do vetor para teste: ");
+        int tam = teclado.nextInt();
+        
         Integer[] vetor = gerarVetorObjetos(tam);
+        
+        System.out.println("\nEscolha o método de ordenação:");
+        System.out.println("1 - BubbleSort");
+        System.out.println("2 - InsertionSort");
+        System.out.println("3 - MergeSort");
+        System.out.print("Opção: ");
+        int opcao = teclado.nextInt();
 
-        BubbleSort<Integer> bolha = new BubbleSort<>();
+        // Interface polimórfica para os ordenadores 
+        IOrdenador<Integer> ordenador = null;
 
-        Integer[] vetorOrdenadoBolha = bolha.ordenar(vetor);
+        switch (opcao) {
+            case 1:
+                ordenador = new BubbleSort<>();
+                break;
+            case 2:
+                ordenador = new InsertionSort<>();
+                break;
+            case 3:
+                ordenador = new MergeSort<>();
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
 
-        System.out.println("\nVetor ordenado método Bolha:");
-        System.out.println("Comparações: " + bolha.getComparacoes());
-        System.out.println("Movimentações: " + bolha.getMovimentacoes());
-        System.out.println("Tempo de ordenação (ms): " + bolha.getTempoOrdenacao());
+        if (ordenador != null) {
+            Integer[] vetorOrdenado = ordenador.ordenar(vetor);
 
-        /* TO DO
-        *Fazer a implementacao do restante do main para a ordenacao 
-        *  com os algoritmos InsertionSort e SelectionSort
-        */
+            System.out.println("\n--- Resultados da Ordenação ---");
+            System.out.println("Método: " + ordenador.getClass().getSimpleName());
+            System.out.println("Comparações: " + ordenador.getComparacoes());
+            System.out.println("Movimentações: " + ordenador.getMovimentacoes());
+            System.out.printf("Tempo de ordenação: %.4f ms\n", ordenador.getTempoOrdenacao());
+            
+            if (tam <= 20) {
+                System.out.println("Vetor Resultante: " + Arrays.toString(vetorOrdenado));
+            }
+        }
+
+        teclado.close();
     }
 }
